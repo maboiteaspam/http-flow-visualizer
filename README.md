@@ -40,5 +40,5 @@ Web app http server host
 
 ## see also
 
-(https://github.com/maboiteaspam/http-recorder)[http-recorder]
-(https://github.com/maboiteaspam/http-replayer)[http-replayer]
+[http-recorder](https://github.com/maboiteaspam/http-recorder)
+[http-replayer](https://github.com/maboiteaspam/http-replayer)
