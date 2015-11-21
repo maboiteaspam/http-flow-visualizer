@@ -1,0 +1,137 @@
+<html>
+<head>
+</head>
+<body>
+<h2>
+    total query : <span class="total-query-text"></span>
+    <br/>
+    average keyspace size : <span class="avg-keyspace-text"></span>
+</h2>
+
+
+<h2>keyspace size : <span class="keyspace-text"></span></h2><canvas class="keyspace-chart" width="800" height="100"></canvas>
+
+<h2>jobs size : <span class="jobs-text"></span></h2><canvas class="jobs-chart" width="800" height="100"></canvas>
+
+<h2>query velocity : <span class="velocity-text"></span></h2><canvas class="query-chart" width="800" height="100"></canvas>
+
+<!--<h1>total query</h1><canvas class="total-query-chart" width="800" height="100"></canvas>-->
+
+<script type="text/javascript" src="components/jquery/dist/jquery.min.js"></script>
+<script src="components/Chart.js/Chart.js"></script>
+<script type="text/javascript">
+    var labels = [
+        0
+    ];
+    var totalQueryText = $('.total-query-text')
+    var keyspaceText = $('.keyspace-text')
+    var avgKeyspaceText = $('.avg-keyspace-text')
+    var jobsText = $('.jobs-text')
+    var velocityText = $('.velocity-text')
+//    var ctx = $(".total-query-chart").get(0).getContext("2d");
+//    var totalQuery = new Chart(ctx).Line({
+//        legend:'total query',
+//        labels: [],
+//        datasets: [
+//            {
+//                label: "total query count",
+//                fillColor: "rgba(151,187,205,0.2)",
+//                strokeColor: "rgba(151,187,205,1)",
+//                pointColor: "rgba(151,187,205,1)",
+//                pointStrokeColor: "#fff",
+//                pointHighlightFill: "#fff",
+//                pointHighlightStroke: "rgba(151,187,205,1)",
+//                data: [0]
+//            }
+//        ]
+//    });
+
+    var ctx2 = $(".keyspace-chart").get(0).getContext("2d");
+    var keySpace = new Chart(ctx2).Bar({
+        labels: [],
+        datasets: [
+            {
+                label: "keyspace blocks",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: [0]
+            }
+        ]
+    });
+
+
+    var ctx3 = $(".jobs-chart").get(0).getContext("2d");
+    var jobs = new Chart(ctx3).Bar({
+        labels: [],
+        datasets: [
+            {
+                label: "jobs count",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: [0]
+            }
+        ]
+    });
+
+
+    var ctx4 = $(".query-chart").get(0).getContext("2d");
+    var query = new Chart(ctx4).Bar({
+        labels: [],
+        datasets: [
+            {
+                label: "query count",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: [0]
+            }
+        ]
+    });
+
+
+    var maxLength = 15;
+    var updateData = function (){
+        $.get('/stats', function (data){
+            var cntBlocks = 0;
+            var cntJobs = 0;
+            Object.keys(data.jobs).forEach(function (c){
+                cntBlocks++;
+                cntJobs+=data.jobs[c]
+            });
+            requestAnimationFrame(function (){
+                labels.push(labels[labels.length-1]-1)
+//                totalQuery.addData( [data.totalQueryCount], labels[labels.length-1] )
+                keySpace.addData( [cntBlocks], labels[labels.length-1] )
+                jobs.addData( [cntJobs], labels[labels.length-1] )
+                query.addData( [data.queryCount], labels[labels.length-1] )
+
+                if (labels.length>maxLength) {
+//                    totalQuery.removeData();
+                    keySpace.removeData();
+                    jobs.removeData();
+                    query.removeData();
+                }
+                totalQueryText.text(data.totalQueryCount)
+                velocityText.text(data.queryCount)
+                keyspaceText.text(cntBlocks)
+                avgKeyspaceText.text(parseInt(cntJobs/cntBlocks))
+                jobsText.text(cntJobs)
+                setTimeout(updateData, 1000)
+            })
+        })
+    }
+    updateData()
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "http-flow-visualizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "WTF",
+  "bin": {
+    "http-flow-visualizer": "./bin.js"
+  },
+  "dependencies": {
+    "async": "^1.5.0",
+    "debug": "^2.2.0",
+    "express": "^4.13.3",
+    "minimist": "^1.2.0",
+    "morgan": "^1.6.1",
+    "opener": "^1.4.1",
+    "redis": "^2.3.1",
+    "st": "^1.0.0"
+  }
+}
